@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'PanModal'
-  s.version          = '1.2.7'
+  s.version          = '1.2.8'
   s.summary          = 'PanModal is an elegant and highly customizable presentation API for constructing bottom sheet modals on iOS.'
 
 # This description is used to generate tags and improve search results.
@@ -18,12 +18,12 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = 'PanModal is an elegant and highly customizable presentation API for constructing bottom sheet modals on iOS.'
-  s.homepage         = 'https://github.com/slackhq/PanModal'
+  s.homepage         = 'https://github.com/Teknasyon/PanModal'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'slack' => 'opensource@slack.com' }
-  s.source           = { :git => 'https://github.com/slackhq/PanModal.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/Teknasyon/PanModal.git', :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/slackhq'
-  s.ios.deployment_target = '10.0'
+  s.ios.deployment_target = '15.0'
   s.swift_version = '5.0'
   s.source_files = 'PanModal/**/*.{swift,h,m}'
 end
