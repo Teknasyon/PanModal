@@ -176,6 +176,10 @@ open class PanModalPresentationController: UIPresentationController {
 
         guard let containerView = containerView
             else { return }
+        
+        if self.panContainerView.frame == .zero {
+            self.adjustPresentedViewFrame()
+        }
 
         layoutBackgroundView(in: containerView)
         layoutPresentedView(in: containerView)
@@ -843,24 +847,24 @@ private extension PanModalPresentationController {
      */
     func addRoundedCorners(to view: UIView) {
         let radius = presentable?.cornerRadius ?? 0
+        let path = UIBezierPath(roundedRect: view.bounds,
+                                byRoundingCorners: [.topLeft, .topRight],
+                                cornerRadii: CGSize(width: radius, height: radius))
         
-        view.layer.cornerRadius = radius
-        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        view.layer.masksToBounds = true
+        // Draw around the drag indicator view, if displayed
+        if presentable?.showDragIndicator == true {
+            let indicatorLeftEdgeXPos = view.bounds.width/2.0 - Constants.dragIndicatorSize.width/2.0
+            drawAroundDragIndicator(currentPath: path, indicatorLeftEdgeXPos: indicatorLeftEdgeXPos)
+        }
         
+        // Set path as a mask to display optional drag indicator view & rounded corners
+        let mask = CAShapeLayer()
+        mask.path = path.cgPath
+        view.layer.mask = mask
+        
+        // Improve performance by rasterizing the layer
         view.layer.shouldRasterize = true
         view.layer.rasterizationScale = UIScreen.main.scale
-        
-        if #available(iOS 19.0, *) {
-            let subviews = view.subviews
-            view.subviews.forEach { $0.removeFromSuperview() }
-            subviews.forEach { view.addSubview($0) }
-            
-            DispatchQueue.main.async {
-                view.layer.cornerRadius = radius
-                view.layer.masksToBounds = true
-            }
-        }
     }
 
     /**
