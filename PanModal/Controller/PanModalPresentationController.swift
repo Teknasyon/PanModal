@@ -125,8 +125,15 @@ open class PanModalPresentationController: UIPresentationController {
      the presented view's properties
      */
     private lazy var panContainerView: PanContainerView = {
+        let edgeInsets = presentable?.edgeInsets ?? .zero
         let frame = containerView?.frame ?? .zero
-        return PanContainerView(presentedView: presentedViewController.view, frame: frame)
+        let newFrame = CGRect(
+            x: frame.origin.x + edgeInsets,
+            y: frame.origin.y,
+            width: frame.width - edgeInsets * 2.0,
+            height: frame
+                .height)
+        return PanContainerView(presentedView: presentedViewController.view, frame: newFrame)
     }()
 
     /**
@@ -370,10 +377,10 @@ private extension PanModalPresentationController {
 
         guard let frame = containerView?.frame
             else { return }
-
-        let adjustedSize = CGSize(width: frame.size.width, height: frame.size.height - anchoredYPosition)
+        let edgeInsets = presentable?.edgeInsets ?? .zero
+        let adjustedSize = CGSize(width: frame.size.width - edgeInsets * 2.0, height: frame.size.height - anchoredYPosition)
         let panFrame = panContainerView.frame
-        panContainerView.frame.size = frame.size
+        panContainerView.frame.size = CGSize(width: frame.size.width - (edgeInsets * 2.0), height: frame.size.height)
         
         if ![shortFormYPosition, longFormYPosition].contains(panFrame.origin.y) {
             // if the container is already in the correct position, no need to adjust positioning
@@ -381,7 +388,7 @@ private extension PanModalPresentationController {
             let yPosition = panFrame.origin.y - panFrame.height + frame.height
             presentedView.frame.origin.y = max(yPosition, anchoredYPosition)
         }
-        panContainerView.frame.origin.x = frame.origin.x
+        panContainerView.frame.origin.x = frame.origin.x + edgeInsets
         presentedViewController.view.frame = CGRect(origin: .zero, size: adjustedSize)
     }
 
